@@ -32,17 +32,21 @@
         scoreNumber.innerHTML = localStorage.getItem('score') || 0;
 
         let data = "waiting for data...";
+        let dataIndex = 0
+        let isLoading = false
         let truthIndex = 0;
         word.innerHTML = data
         refreshWord()
 
-
-        function getRandomData(){
-            const randomIndex = Math.floor(Math.random() * datas.length);
-            return datas[randomIndex];
+        function getRandomIndex(){
+            return randomIndex = Math.floor(Math.random() * vocabs.length);
         }
         function refreshWord(){
-            data = getRandomData()
+            dataIndex = getRandomIndex();
+            data = {
+                word: vocabs[dataIndex],
+                meaning: meanings[dataIndex]
+            }
             word.innerHTML = data.word;
             truthIndex = Math.floor(Math.random() * buttons.length)
             
@@ -50,13 +54,15 @@
                 if(index === truthIndex){
                     button.innerHTML = data.meaning
                 } else {
-                    button.innerHTML = datas[Math.floor(Math.random() * datas.length)].meaning;
+                    button.innerHTML = meanings[getRandomIndex()]
                 }
             })
         }
 
         buttons.forEach((button) => {
             button.addEventListener('click', () => {
+                if(isLoading) return;
+                isLoading = true;
                 buttons[truthIndex].classList.add('bg-green-500');
                 if(button.innerHTML !== data.meaning){
                     button.classList.add('bg-red-500')
@@ -67,8 +73,9 @@
                 }
                 setTimeout(() => {
                     buttons[truthIndex].classList.remove('bg-green-500');
-                    button.classList.remove('bg-green-500', 'bg-red-500');
+                    button.classList.remove('bg-red-500');
                     refreshWord();
+                    isLoading = false;
                 }, 1000);
 
                 
