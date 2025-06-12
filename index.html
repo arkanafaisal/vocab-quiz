@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./src/output.css">
+    <title>find the definition!</title>
+</head>
+<body class="w-full h-screen flex flex-col items-center justify-center bg-gray-100">
+    <header class="max-w-full px-5 rounded-2xl text-md fixed text-2xl top-0 bg-white shadow-md flex items-center py-2 gap-2 justify-center">
+        <h2>Score: </h2>
+        <h2 class="" id="scoreNUmber">0</h2>
+    </header>
+    <div class="max-w-[300px] sm:max-w-[400px]  box-border border border-gray-300 rounded-2xl px-5 py-6 bg-white text-gray-900 flex flex-col items-center shadow-lg" id="container">
+        <h1 class="text-2xl sm:text-3xl ">Cari Arti Dari Kata:</h1>
+        <h2 class="text-3xl sm:text-4xl font-bold my-1 sm:my-4" id="word">Example</h2>
+        <ul class="mt-8 sm:mt-10 flex flex-col items-center justify-center gap-2 text-white text-md sm:text-xl">
+            <li><button class="px-4 py-1 bg-blue-500 rounded-xl hover:bg-blue-600">this is answer number 1</button></li>
+            <li><button class="px-4 py-1 bg-blue-500 rounded-xl hover:bg-blue-600">this is answer number 2</button></li>
+            <li><button class="px-4 py-1 bg-blue-500 rounded-xl hover:bg-blue-600">this is answer number 3</button></li>
+            <li><button class="px-4 py-1 bg-blue-500 rounded-xl hover:bg-blue-600">this is answer number 3</button></li>
+            <li><button class="px-4 py-1 bg-blue-500 rounded-xl hover:bg-blue-600">this is answer number 3</button></li>
+        </ul>
+
+    </div>
+    
+    <script src="./datas.js"></script>
+    <script>
+        const word = document.getElementById('word');
+        const buttons = document.querySelectorAll('button');
+        const scoreNumber = document.getElementById('scoreNUmber');
+        scoreNumber.innerHTML = localStorage.getItem('score') || 0;
+
+        let data = "waiting for data...";
+        let truthIndex = 0;
+        word.innerHTML = data
+        refreshWord()
+
+
+        function getRandomData(){
+            const randomIndex = Math.floor(Math.random() * datas.length);
+            return datas[randomIndex];
+        }
+        function refreshWord(){
+            data = getRandomData()
+            word.innerHTML = data.word;
+            truthIndex = Math.floor(Math.random() * buttons.length)
+            
+            buttons.forEach((button, index)=>{
+                if(index === truthIndex){
+                    button.innerHTML = data.meaning
+                } else {
+                    button.innerHTML = datas[Math.floor(Math.random() * datas.length)].meaning;
+                }
+            })
+        }
+
+        buttons.forEach((button) => {
+            button.addEventListener('click', () => {
+                buttons[truthIndex].classList.add('bg-green-500');
+                if(button.innerHTML !== data.meaning){
+                    button.classList.add('bg-red-500')
+                } else {
+                    scoreNumber.innerHTML = parseInt(scoreNumber.innerHTML) + 1;
+                    localStorage.setItem('score', scoreNumber.innerHTML);
+                    console.log('correct answer');
+                }
+                setTimeout(() => {
+                    buttons[truthIndex].classList.remove('bg-green-500');
+                    button.classList.remove('bg-green-500', 'bg-red-500');
+                    refreshWord();
+                }, 1000);
+
+                
+            });
+        });
+    </script>
+</body>
+</html>
